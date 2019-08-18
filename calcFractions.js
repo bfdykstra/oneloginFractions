@@ -12,9 +12,10 @@
 // = 3_1/2
 
 
-
+/*
+Given two numbers, a and b, and a valid operator, return the result of the operation
+*/
 function calcRaw(a, operator, b) {
-  
 
   switch (operator) {
     case '*':
@@ -34,6 +35,8 @@ function calcRaw(a, operator, b) {
       break;
   }
 }
+
+/* Find the greatest common devisor for two numbers a and b */
 function greatestCommonDevisor(a, b){
   if (!b) return a;
 
@@ -41,7 +44,10 @@ function greatestCommonDevisor(a, b){
 
 }
     
-
+/* convert a floating point number to the string representation of a fraction
+   Doesn't do great with irrational numbers ie. 0.33333333 gives "3333333333333333/10000000000000000"
+   instead of 1/3.
+*/
 function toFrac(float) {
   // good ole stack overflow coming in handy: 
   // https://stackoverflow.com/questions/23575218/convert-decimal-number-to-fraction-in-javascript-or-closest-fraction
@@ -49,19 +55,19 @@ function toFrac(float) {
 
   let denominator = Math.pow(10, len);
   let numerator = float * denominator;
-  console.log('num: ', numerator)
-  console.log('denominator: ', denominator)
+  
   const divisor = greatestCommonDevisor(numerator, denominator);
-  console.log('divisor: ', divisor)
 
   numerator /= divisor;
   denominator /= divisor;
 
-  console.log('num: ', numerator)
-  console.log('denominator: ', denominator)
   return `${Math.floor(numerator)}/${Math.floor(denominator)}`;
 }
 
+
+/*
+  Given a floating point number, convert it to the string representation of a fraction
+*/
 function floatToFrac(float) {
 
   const positive = float >= 0 ? float : float * -1
@@ -84,29 +90,33 @@ function floatToFrac(float) {
   
 }
 
-// convert mixed number or raw fraction to float
+
+/*
+  Given a string representation of a fraction, 
+  convert to a float
+*/
 function fracToFloat(frac) {
   const [a, b] = frac.split('_') // either of length 2 or 1
-  if (a[0] === '-')
-  // a can be either whole number, or fraction
-  const aRaw = a.includes('/') ? calcRaw(...a.split('')) : parseFloat(a, 10)
+  let aRaw;
+  if (a[0] === '-') {
+    aRaw = a.includes('/') ? calcRaw(...a.slice(1).split('')) : parseFloat(a, 10)
+  } else {
+    aRaw = a.includes('/') ? calcRaw(...a.split('')) : parseFloat(a, 10)
+  }
+  
   const bRaw = b ? calcRaw(...b.split('')) : 0
   
-  const result = calcRaw(aRaw, '+', bRaw)
+  const result = calcRaw( a[0] === '-' ? -1 * aRaw : aRaw, '+', bRaw)
 
-  console.log('a: ', aRaw, 'b: ', bRaw, 'result: ', result);
   return result
   
 }
 
 function calcFractions(argArr) {
-  console.log('arguments: ', argArr)
-
-  // assume it's just 2 numbers for now
+  // assume it's 2 numbers
   const [a, operator, b] = argArr
 
   const result = calcRaw(fracToFloat(a), operator, fracToFloat(b))
-  console.log('result before converting: ', result)
   console.log('result after conversion: ', floatToFrac(result))
 }
 
