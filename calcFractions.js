@@ -105,8 +105,8 @@ function fracToFloat(frac) {
   if (a[0] === '-') {
 
     // if a is a fraction, split it up in to [num, "/", den]
-    const [positiveA, operator, postiveB] = a.slice(1).split('')
-    aRaw = a.includes('/') ? calcRaw(-1 * postiveA, operator, postiveB) : parseFloat(a, 10)
+    const [positiveA, operator, positiveB] = a.slice(1).split('')
+    aRaw = a.includes('/') ? calcRaw(-1 * positiveA, operator, positiveB) : parseFloat(a, 10)
 
     const [x, op, y] = b ? b.split('') : [0, '+', 0]
     bRaw = calcRaw(-1 * x, op, y)
@@ -133,7 +133,7 @@ function calcFractions(argArr) {
   const [a, operator, b] = argArr
 
   const result = calcRaw(fracToFloat(a), operator, fracToFloat(b))
-  console.log(`${a} ${operator} ${b} = ${result}`)
+  console.log(`${a} ${operator} ${b} = ${floatToFrac(result)}`)
 }
 
 
