@@ -16,6 +16,7 @@
 Given two numbers, a and b, and a valid operator, return the result of the operation
 */
 function calcRaw(a, operator, b) {
+  if (isNaN(parseFloat(a, 10)) || isNaN(parseFloat(b, 10))) throw Error(`non numeric input given: ${a}, ${b}`)
 
   switch (operator) {
     case '*':
@@ -74,7 +75,6 @@ function floatToFrac(float) {
   let result;
   // fraction less than 1
   if (positive < 1) {
-    console.log('here: ', positive)
     result =  toFrac(positive);
   // mixed number
   } else if (positive % 1 !== 0) {
@@ -96,36 +96,50 @@ function floatToFrac(float) {
   convert to a float
 */
 function fracToFloat(frac) {
-  const [a, b] = frac.split('_') // either of length 2 or 1
+  const [a, b, ...rest] = frac.split('_') // either of length 2 or 1
+  if (rest.length) throw Error(`Please provide a number in the valid format. The given input was: ${frac}`)
+  
   let aRaw;
+  let bRaw;
+  // the fraction is negative
   if (a[0] === '-') {
-    aRaw = a.includes('/') ? calcRaw(...a.slice(1).split('')) : parseFloat(a, 10)
+
+    // if a is a fraction, split it up in to [num, "/", den]
+    const [positiveA, operator, postiveB] = a.slice(1).split('')
+    aRaw = a.includes('/') ? calcRaw(-1 * postiveA, operator, postiveB) : parseFloat(a, 10)
+
+    const [x, op, y] = b ? b.split('') : [0, '+', 0]
+    bRaw = calcRaw(-1 * x, op, y)
   } else {
     aRaw = a.includes('/') ? calcRaw(...a.split('')) : parseFloat(a, 10)
+    bRaw = b ? calcRaw(...b.split('')) : 0
   }
+ 
   
-  const bRaw = b ? calcRaw(...b.split('')) : 0
-  
-  const result = calcRaw( a[0] === '-' ? -1 * aRaw : aRaw, '+', bRaw)
+  const result = calcRaw(aRaw, '+', bRaw)
 
   return result
   
 }
 
+/*
+  Given a command line argument calculate the result of operations
+  on the given fractions
+  Example run:
+  1/2 * 3_3/4 = 1_7/8
+  2_3/8 + 9/8 = 3_1/2
+*/
 function calcFractions(argArr) {
-  // assume it's 2 numbers
   const [a, operator, b] = argArr
 
   const result = calcRaw(fracToFloat(a), operator, fracToFloat(b))
-  console.log('result after conversion: ', floatToFrac(result))
+  console.log(`${a} ${operator} ${b} = ${result}`)
 }
 
 
 function drive() {
   const expression = process.argv[2] // assumption is that input is a single string
-  console.log('expression: ', expression)
-  const split = expression.trim().split(/\s+/); 
-
+  const split = expression.trim().split(/\s+/); // split on whitespace, trim extra
 
   return calcFractions(split)
 }
