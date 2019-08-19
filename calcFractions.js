@@ -16,7 +16,7 @@
   Given two numbers, a and b, and a valid operator, return the result of the operation
 */
 function calcRaw(a, operator, b) {
-  if (isNaN(parseFloat(a, 10)) || isNaN(parseFloat(b, 10))) throw Error(`non numeric input given: ${a}, ${b}`)
+  if (isNaN(parseFloat(a, 10)) || isNaN(parseFloat(b, 10))) throw Error(`Non numeric input given: ${a}, ${b}`)
 
   switch (operator) {
     case '*':
@@ -37,6 +37,7 @@ function calcRaw(a, operator, b) {
   }
 }
 
+
 /* 
   Find the greatest common devisor for two numbers a and b
 */
@@ -46,7 +47,8 @@ function greatestCommonDevisor(a, b){
   return greatestCommonDevisor(b, a % b)
 
 }
-    
+
+
 /* 
   Convert a floating point number to the string representation of a fraction.
   Doesn't do great with irrational numbers ie. 0.33333333 gives "3333333333333333/10000000000000000"
@@ -76,7 +78,7 @@ function floatToFrac(float) {
 
   const positive = float >= 0 ? float : float * -1
   let result;
-  
+
   // fraction less than 1
   if (positive < 1) {
     result =  toFrac(positive);
@@ -130,10 +132,16 @@ function fracToFloat(frac) {
 
 /*
   Given a command line argument calculate the result of operations
-  on the given fractions
+  on the given fractions.
+
   Example run:
   1/2 * 3_3/4 = 1_7/8
   2_3/8 + 9/8 = 3_1/2
+
+  The general algorithm is
+  1. convert the string fractions to floating point numbers
+  2. do the specified operation on the two floats
+  3. convert the result back to a string fraction representation
 */
 function calcFractions(argArr) {
   const [a, operator, b] = argArr
